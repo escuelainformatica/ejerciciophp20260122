@@ -28,6 +28,11 @@
                 <button name="submit" type="submit" class="btn btn-primary">Submit</button>
             </div>
         </div>
+        @if($mensaje)
+        <div class="alert alert-danger" role="alert">
+            {{ $mensaje }}
+        </div>
+        @endif
 
     </form>
 </div>

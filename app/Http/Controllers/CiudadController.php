@@ -20,14 +20,25 @@ class CiudadController extends Controller
 
     public function Insertar() {
         $ciudad=new Ciudad();
-        return view("ciudad.insertar",['ciudad'=>$ciudad]);
+        return view("ciudad.insertar",['ciudad'=>$ciudad,'mensaje'=>'']);
 
     }
     public function InsertarPost(Request $request) {
-        $ciudad=new Ciudad($request->all());         
-        CiudadRepo::insertar($ciudad);
-        return redirect('/ciudad/');
-        //return view("ciudad.insertar",['ciudad'=>$ciudad]);
+        $ciudad=new Ciudad($request->all());        
+        try { 
+            CiudadRepo::insertar($ciudad);
+            $ciudad=new Ciudad();
+            return view("ciudad.insertar",[
+                'ciudad'=>$ciudad,
+                'mensaje'=>'Insertado correctamente'
+                ]);
+            //return redirect('/ciudad/');
+        } catch(\Exception $ex) {
+            return view("ciudad.insertar",[
+                'ciudad'=>$ciudad,
+                'mensaje'=>'No se pudo insertar'
+                ]);
+        }        
     }
     public function Actualizar($id) {
         $ciudad=CiudadRepo::obtener($id);
