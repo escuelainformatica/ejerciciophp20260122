@@ -18,12 +18,19 @@ class CiudadController extends Controller
         return $ciudades;
     }
 
-    public function Insertar() {
-        $ciudad=new Ciudad();
+    public function Insertar(Request $request) {
+        $ciudad=new Ciudad($request->old());
         return view("ciudad.insertar",['ciudad'=>$ciudad,'mensaje'=>'']);
 
     }
     public function InsertarPost(Request $request) {
+        $request->validate([
+            'nombre' => 'required|max:30',
+            'poblacion' => 'required|integer|min:0|max:100000000',
+        ]);
+    
+
+
         $ciudad=new Ciudad($request->all());        
         try { 
             CiudadRepo::insertar($ciudad);

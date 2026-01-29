@@ -72,3 +72,104 @@ VITE_APP_NAME="${APP_NAME}"
 # la base de datos no esta incluida
 
 php artisan migrate:fresh
+
+# validación
+
+## controlador
+
+### En el metodo POST 
+$request->validate  hace una validacion de cada uno de los campos indicados.
+
+```php
+        $request->validate([
+            'nombre' => 'required|max:30',
+            'poblacion' => 'required|integer|min:0|max:100000000',
+        ]);
+```
+
+### En el metodo GET
+
+```php
+        $ciudad=new Ciudad($request->old()); // lee los datos antiguos (datos no ingresados)
+```
+
+## vista
+
+### mostrar todos los mensajes
+
+```php
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+```
+
+### mostrar solo un mensaje de error
+
+```php
+    @error('nombre')
+        <div class="alert alert-danger">{{ $message }}</div>
+    @enderror
+
+```
+
+# autenticación
+
+## vista con su controlador
+La vista deberia ser un formulario.
+
+```php
+class LoginController extends Controller
+{
+    public function login() {
+        return view("login");
+    }
+    /**
+     * Handle an authentication attempt.
+     */
+    public function authenticate(Request $request): RedirectResponse
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+ 
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+ 
+            return redirect()->intended('/ciudad');
+        }
+ 
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
+    }
+    public function logout() {
+        Auth::logout();
+        return redirect()->intended('/login');
+    }
+}
+```
+
+## mostrar usuario actual
+Con la funcion @auth, se puede un mensaje si el usuario esta logeado.
+Con la funcion Auth::user(), obtengo el usuario (nombre,email, etc.)
+
+```php
+
+@auth
+    <p>Welcome, {{ Auth::user()->name }}!</p>
+    <p>Your email is: {{ auth()->user()->email }}</p>
+@endauth
+```
+
+## enrutamiento y autenticación
+
+En todas las paginas que requieren autenticación, hay que agregar el middleware ->middleware('auth');
+
+Y una de las páginas deberia tener el nombre llamado login   ->name("login");

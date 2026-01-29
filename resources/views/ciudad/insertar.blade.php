@@ -2,6 +2,18 @@
 @section("contenido")
 <div>
     <h1>Insertar Ciudad</h1>
+
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+
     <form method="post">
         @csrf
 
@@ -15,12 +27,18 @@
             <label for="nombre" class="col-4 col-form-label">Nombre</label>
             <div class="col-8">
                 <input id="nombre" name="nombre" type="text" class="form-control" value="{{ $ciudad->nombre }}">
+                @error('nombre')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
             </div>
         </div>
         <div class="form-group row">
             <label for="poblacion" class="col-4 col-form-label">Población</label>
             <div class="col-8">
                 <input id="poblacion" name="poblacion" type="text" class="form-control" value="{{ $ciudad->poblacion }}">
+                @error('poblacion')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
             </div>
         </div>
         <div class="form-group row">

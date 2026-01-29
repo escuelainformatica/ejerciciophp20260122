@@ -1,5 +1,10 @@
 @extends("_layout.base")
 @section("contenido")
+@auth
+    <p>Welcome, {{ Auth::user()->name }}!</p>
+    <p>Your email is: {{ auth()->user()->email }}</p>
+@endauth
+
 <div>
     <h1>Listado de Ciudades</h1>
     <a href="/ciudad/insertar" class="btn btn-outline-primary">Insertar</a><br/>
